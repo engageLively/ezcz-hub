@@ -40,7 +40,7 @@ hub:
 
        
       class TmpSecretAuthenticator(TmpAuthenticator):
-       """
+        """
         Clone of TmpAuthenticator, except we only start a new session when a secret is passed in, present, and correct.  
         Also add a class which chooses the image based on what is passed in.
         For the base class, see: https://github.com/jupyterhub/tmpauthenticator/blob/main/tmpauthenticator/__init__.py
@@ -58,7 +58,7 @@ hub:
             "base": "engagelively/el-jupyter:base2.2.2",
             "scipy": "engagelively/el-jupyter:scipy2.2.2"
           }
-          default_image = "engagelively/el-jupyter:datascience2.2.2"
+          default_image = "quay.io/jupyterhub/singleuser:latest"
           # return the selected image if there is one or the default
           selected_image = parm_dict['image'][0] if 'image' in parm_dict else default_image
           return selected_image
@@ -114,5 +114,3 @@ hub:
         print(str)
         return authentication
       c.Authenticator.post_auth_hook = my_hook
-
-    
