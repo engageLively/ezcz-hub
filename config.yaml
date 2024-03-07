@@ -11,8 +11,6 @@ hub:
       A Hub which instantiates a new anonymous session for a user given an image.   The intended use case for this is a Jupyter window in an iframe 
       which contains instructional material.  The image name and the secret for instantiating an image  are passed in as parameters in the URL.
       '''
-      
-      
       from tmpauthenticator import TmpAuthenticator, TmpAuthenticateHandler
       from tornado import web
 
@@ -51,6 +49,7 @@ hub:
           # parse_qs(urlparse.query) where parse_qs and urlparse are both in the standard library urllib.parse
           # the image dictionary and default_image should be in an offboard file.
           images = {
+            "lesson3": "gcr.io/ezczstat/lesson3-python:1.0.1",
             "rstudio": "engagelively/el-jupyter:rstudio2.2.2",
             "data_science": "engagelively/el-jupyter:datascience2.2.2",
             "tensor_flow": "engagelively/el-jupyter:tensorflow2.2.2",
@@ -100,7 +99,7 @@ hub:
 
           Code is identical to TmpAuthenticator but it uses TmpSecretAuthenticator
           """
-          return [("/tmplogin", TmpSecretAuthenticator)]
+          return [("/tmplogin", TmpSecretAuthenticateHandler)]
 
       # Set the authenticator
 
@@ -114,3 +113,35 @@ hub:
         print(str)
         return authentication
       c.Authenticator.post_auth_hook = my_hook
+cull:
+  enabled: true
+  timeout: 3600
+  every: 300
+  maxAge: 14400
+singleuser:
+  storage:
+    extraVolumes:
+      - name: jupyterhub-shared
+        persistentVolumeClaim:
+          claimName: jupyterhub-shared-volume
+    extraVolumeMounts:
+      - name: jupyterhub-shared
+        mountPath: /home/shared
+  lifecycleHooks:
+    postStart:
+      exec:
+        command:
+          - "sh"
+          - "-c"
+          - "\"/usr/local/bin/language_setup/pre-start.sh\""
+  networkPolicy:
+    enabled: true
+  defaultUrl: "/lab"
+  storage:
+    capacity: 25G
+  memory:
+    limit: 2G
+    guarantee: 100M
+  cpu:
+    limit: 0.97
+    guarantee: 0.002
