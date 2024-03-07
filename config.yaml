@@ -55,12 +55,13 @@ hub:
             "tensor_flow": "engagelively/el-jupyter:tensorflow2.2.2",
             "spark": "engagelively/el-jupyter:allspark2.2.2",
             "base": "engagelively/el-jupyter:base2.2.2",
-            "scipy": "engagelively/el-jupyter:scipy2.2.2"
+            "scipy": "engagelively/el-jupyter:scipy2.2.2",
+            "default": "quay.io/jupyterhub/singleuser:latest"
           }
-          default_image = "quay.io/jupyterhub/singleuser:latest"
+         
           # return the selected image if there is one or the default
-          selected_image = parm_dict['image'][0] if 'image' in parm_dict else default_image
-          return selected_image
+          selected_image_key = parm_dict['image'][0] if 'image' in parm_dict else "default"
+          return images[selected_image_key]
 
         async def authenticate(self, handler, data):
           """
@@ -119,21 +120,6 @@ cull:
   every: 300
   maxAge: 14400
 singleuser:
-  storage:
-    extraVolumes:
-      - name: jupyterhub-shared
-        persistentVolumeClaim:
-          claimName: jupyterhub-shared-volume
-    extraVolumeMounts:
-      - name: jupyterhub-shared
-        mountPath: /home/shared
-  lifecycleHooks:
-    postStart:
-      exec:
-        command:
-          - "sh"
-          - "-c"
-          - "\"/usr/local/bin/language_setup/pre-start.sh\""
   networkPolicy:
     enabled: true
   defaultUrl: "/lab"
