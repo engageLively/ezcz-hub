@@ -52,7 +52,8 @@ hub:
           # the image dictionary and default_image should be in an offboard file.
           configurations = {
             "lesson3": {"image": "gcr.io/ezczstat/lesson3-python:1.0.1"},
-            "bayesian": {"image": "gcr.io/ezczstat/bayesian-jlab:1.0.0"},
+            "bayesian": {"image": "gcr.io/ezczstat/bayesian-jlab:1.0.1", "cmd": "/usr/local/bin/jupyterhub-singleuser"},
+            "bayesian-2": {"image": "gcr.io/ezczstat/bayesian-jlab:1.0.2", "url": "/rstudio"},
             "rstudio": {"image": "engagelively/el-jupyter:rstudio2.2.2", "url": "/rstudio"},
             "data_science": {"image": "engagelively/el-jupyter:datascience2.2.2"},
             "tensor_flow": {"image": "engagelively/el-jupyter:tensorflow2.2.2"},
@@ -84,6 +85,8 @@ hub:
           c.KubeSpawner.image = configuration["image"]
           if "url" in configuration:
             c.KubeSpawner.default_url = configuration["url"]
+          if "cmd" in configuration:
+            c.KubeSpawner.cmd = configuration["cmd"]
             
           # Check to see if we should allocate a session.  If so, behavior is identical to TmpAuthenticator
 
@@ -122,18 +125,21 @@ hub:
       c.Authenticator.post_auth_hook = my_hook
 cull:
   enabled: true
-  timeout: 3600
+  timeout: 900
   every: 300
-  maxAge: 14400
+  maxAge: 3600
+  users: true
 singleuser:
   networkPolicy:
     enabled: true
   defaultUrl: "/lab"
   storage:
-    capacity: 25G
+    type: none
   memory:
     limit: 2G
     guarantee: 100M
   cpu:
     limit: 0.97
     guarantee: 0.002
+  image:
+    pullPolicy: Always
