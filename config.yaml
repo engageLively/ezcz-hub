@@ -1,5 +1,13 @@
 hub:
   extraConfig:
+    iframe-config: |
+      c.JupyterHub.tornado_settings = {
+        'headers': {
+            'Content-Security-Policy': "frame-ancestors http://localhost:3000",
+            'Access-Control-Allow-Origin': '*'
+        }
+      }
+      c.Spawner.args = ['--NotebookApp.tornado_settings={"headers":{"Content-Security-Policy": "frame-ancestors * self https://sportsanalyticz.com http://localhost:3000"}}', '--NotebookApp.disable_check_xsrf=True']
     00-auth-config: |
       import json
       import uuid
@@ -144,6 +152,15 @@ hub:
         print(str)
         return authentication
       c.Authenticator.post_auth_hook = my_hook
+
+      def hook1(spawner):
+        print('In pre-spawn hook')
+        if spawner is not None:
+          if hasattr(spawner, 'handler'):
+            print(f'Spawner handler is {type(spawner.handler)}')
+          else:
+            print('Spawner has no handler')
+      c.Spawner.pre_spawn_hook = hook1
 cull:
   enabled: true
   timeout: 900
