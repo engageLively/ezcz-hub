@@ -57,9 +57,10 @@ hub:
           # the image dictionary and default_image should be in an offboard file.
           configurations = {
             "lesson3": {"image": "gcr.io/ezczstat/lesson3-python:1.0.1", "url": ""},
-            "bayesian": {"image": "gcr.io/ezczstat/bayesian-jlab:1.0.1", "cmd": "/usr/local/bin/jupyterhub-singleuser"},
+            "breezing": {"image": "gcr.io/ezczstat/breezing-jlab:1.0.2", "url": "/rstudio"},
             "bayesian-2": {"image": "gcr.io/ezczstat/bayesian-jlab:1.0.2", "url": "/rstudio"},
-            "rstudio": {"image": "engagelively/el-jupyter:rstudio2.2.2", "url": "/rstudio"},
+            #  "rstudio": {"image": "engagelively/el-jupyter:rstudio2.2.2", "url": "/rstudio"},
+            "rstudio": {"image": "engagelively/test-rstudio", "url": "/rstudio"},
             "data_science": {"image": "engagelively/el-jupyter:datascience2.2.2", "url": ""},
             "tensor_flow": {"image": "engagelively/el-jupyter:tensorflow2.2.2", "url": ""},
             "spark": {"image": "engagelively/el-jupyter:allspark2.2.2", "url": ""},
