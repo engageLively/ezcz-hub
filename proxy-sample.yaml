@@ -1,0 +1,13 @@
+proxy:
+  secretToken: "cIm0prVMCWuz/JORxiq6189b+/oM/hRnND2t1BIt8HDtUgX9HooHWr+WoKq42oJgWohFIn1uiTUBFOD6J9PWNg=="
+  https:
+    enabled: true
+    hosts:
+      - "hub.athlyticz.academy"
+    letsencrypt:
+      contactEmail: info@engagelively.com
+  traefik:
+    extraInitContainers:      
+      - name: startup-delay
+        image: busybox:stable
+        command: ["sh", "-c", "sleep 60"]

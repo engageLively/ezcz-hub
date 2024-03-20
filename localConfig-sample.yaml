@@ -1,0 +1,8 @@
+    myConfig: |
+      c.JupyterHub.tornado_settings = {
+        'headers': {
+            'Content-Security-Policy': "frame-ancestors https://*.athlyticz.academy",
+            'Access-Control-Allow-Origin': '*'
+        }
+      }
+      c.Spawner.args = ['--NotebookApp.tornado_settings={"headers":{"Content-Security-Policy": "frame-ancestors * self https://*.athlyticz.academy", "X-Frame-Options": "ALLOW-FROM https://*.athlyticz.academy"}}', '--NotebookApp.disable_check_xsrf=True']

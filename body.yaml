@@ -1,17 +1,4 @@
-hub:
-  extraConfig:
-    iframe-config: |
-      import z2jh
-      c.JupyterHub.tornado_settings = {
-        'headers': {
-            'Content-Security-Policy': "frame-ancestors http://localhost:3000",
-            'Access-Control-Allow-Origin': '*'
-        }
-      }
-      c.Spawner.args = ['--NotebookApp.tornado_settings={"headers":{"Content-Security-Policy": "frame-ancestors * self http://localhost:3000", "X-Frame-Options": "ALLOW-FROM localhost:3000"}}', '--NotebookApp.disable_check_xsrf=True']
-      print(c.JupyterHub.tornado_settings)
-      print(c.Spawner.args)
-    00-auth-config: |
+00-auth-config: |
       import json
       import uuid
       from urllib.parse import urlparse, parse_qs

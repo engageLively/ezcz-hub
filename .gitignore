@@ -4,3 +4,5 @@ config-3.yaml
 config2.yaml
 kube-bayes.yml
 test.html
+proxy.yaml
+localConfig.yaml
