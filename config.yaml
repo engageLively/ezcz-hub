@@ -1,7 +1,8 @@
+
+
 hub:
   extraConfig:
     iframe-config: |
-      import z2jh
       c.JupyterHub.tornado_settings = {
         'headers': {
             'Content-Security-Policy': "frame-ancestors http://localhost:3000",
@@ -9,8 +10,6 @@ hub:
         }
       }
       c.Spawner.args = ['--NotebookApp.tornado_settings={"headers":{"Content-Security-Policy": "frame-ancestors * self http://localhost:3000", "X-Frame-Options": "ALLOW-FROM localhost:3000"}}', '--NotebookApp.disable_check_xsrf=True']
-      print(c.JupyterHub.tornado_settings)
-      print(c.Spawner.args)
     00-auth-config: |
       import json
       import uuid
@@ -62,8 +61,8 @@ hub:
             "lesson3": {"image": "gcr.io/ezczstat/lesson3-python:1.0.1", "url": ""},
             "breezing": {"image": "gcr.io/ezczstat/breezing-jlab:1.0.2", "url": "/rstudio"},
             "bayesian-2": {"image": "gcr.io/ezczstat/bayesian-jlab:1.0.2", "url": "/rstudio"},
-            #  "rstudio": {"image": "engagelively/el-jupyter:rstudio2.2.2", "url": "/rstudio"},
-            "rstudio": {"image": "engagelively/test-rstudio", "url": "/rstudio"},
+            "rstudio": {"image": "engagelively/el-jupyter:rstudio2.2.2", "url": "/rstudio"},
+            "rstudio-test-iframe": {"image": "engagelively/test-rstudio", "url": "/rstudio"},
             "data_science": {"image": "engagelively/el-jupyter:datascience2.2.2", "url": ""},
             "tensor_flow": {"image": "engagelively/el-jupyter:tensorflow2.2.2", "url": ""},
             "spark": {"image": "engagelively/el-jupyter:allspark2.2.2", "url": ""},
@@ -90,11 +89,11 @@ hub:
           parm_dict = parse_qs(parsed_url.query)
 
           # New code.  Set the spawner image to the result of _assign_image (should this be moved elsewhere?)
-          configuration = self._assign_configuration(parm_dict)
-          c.KubeSpawner.image = configuration["image"]
-          c.KubeSpawner.default_url = configuration["url"]
-          if "cmd" in configuration:
-            c.KubeSpawner.cmd = configuration["cmd"]
+          # configuration = self._assign_configuration(parm_dict)
+          # c.KubeSpawner.image = configuration["image"]
+          # c.KubeSpawner.default_url = configuration["url"]
+          # if "cmd" in configuration:
+          #   c.KubeSpawner.cmd = configuration["cmd"]
 
 
           
@@ -108,7 +107,7 @@ hub:
                 "name": username,
                 "auth_state": {
                   "data": parm_dict,
-                  "configuration": configuration
+                  # "configuration": configuration
                 }
             }
           else:
@@ -157,23 +156,50 @@ hub:
         return authentication
       c.Authenticator.post_auth_hook = my_hook
 
+      class ProfileAssigner:
+        def __init__(self):
+          self.profiles = {
+            "lesson3": {"image": "gcr.io/ezczstat/lesson3-python:1.0.1", "url": ""},
+            "breezing": {"image": "gcr.io/ezczstat/breezing-jlab:1.0.2", "url": "/rstudio"},
+            "widgetz": {"image": "gcr.io/ezczstat/widgetz:1.0.2", "url": "/rstudio"},
+            "bayesian-2": {"image": "gcr.io/ezczstat/bayesian-jlab:1.0.2", "url": "/rstudio"},
+            "rstudio": {"image": "engagelively/el-jupyter:rstudio2.2.2", "url": "/rstudio"},
+            "rstudio-test-iframe": {"image": "engagelively/test-rstudio", "url": "/rstudio"},
+            "data_science": {"image": "engagelively/el-jupyter:datascience2.2.2", "url": ""},
+            "tensor_flow": {"image": "engagelively/el-jupyter:tensorflow2.2.2", "url": ""},
+            "spark": {"image": "engagelively/el-jupyter:allspark2.2.2", "url": ""},
+            "base": {"image": "engagelively/el-jupyter:base2.2.2", "url": ""},
+            "scipy": {"image": "engagelively/el-jupyter:scipy2.2.2", "url": ""},
+            "default": {"image": "quay.io/jupyterhub/singleuser:latest", "url": ""}
+          }
+
+        def get_profile(self, parm_dict):
+          selected_config_key = parm_dict['config'][0] if 'config' in parm_dict else "default"
+          return self.choose_profile(selected_config_key)
+
+        def choose_profile(self, profile_name):
+          return self.profiles[profile_name] if profile_name in self.profiles else self.profiles['default']
+          
       def hook1(spawner):
         print('In pre-spawn hook')
+        profile_chooser = ProfileAssigner()
+        profile = profile_chooser.choose_profile('default')
         if spawner is not None:
           if hasattr(spawner, 'handler'):
             print(f'Spawner handler is {type(spawner.handler)}')
             parsed_url = urlparse(spawner.handler.get_next_url())
             parm_dict = parse_qs(parsed_url.query)
             print(json.dumps(parm_dict))
-
-          # New code.  Set the spawner image to the result of _assign_image (should this be moved elsewhere?)
-          # configuration = self._assign_configuration(parm_dict)
-          # c.KubeSpawner.image = configuration["image"]
-          # c.KubeSpawner.default_url = configuration["url"]
-          # if "cmd" in configuration:
-          #   c.KubeSpawner.cmd = configuration["cmd"]
+            profile = profile_chooser.get_profile(parm_dict)
           else:
             print('Spawner has no handler')
+        print(json.dumps(profile))
+        spawner.image = profile["image"]
+        spawner.default_url = profile["url"]
+        if "cmd" in profile:
+          spawner.cmd = profile["cmd"]
+        print({"image":spawner.image, "url": spawner.default_url, "cmd": spawner.cmd})
+          
       c.Spawner.pre_spawn_hook = hook1
 cull:
   enabled: true
@@ -193,5 +219,4 @@ singleuser:
   cpu:
     limit: 0.97
     guarantee: 0.002
-  image:
-    pullPolicy: Always
+  

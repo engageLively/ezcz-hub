@@ -1,0 +1,8 @@
+    iframe-config: |
+      c.JupyterHub.tornado_settings = {
+        'headers': {
+            'Content-Security-Policy': "frame-ancestors http://localhost:3000",
+            'Access-Control-Allow-Origin': '*'
+        }
+      }
+      c.Spawner.args = ['--NotebookApp.tornado_settings={"headers":{"Content-Security-Policy": "frame-ancestors * self http://localhost:3000", "X-Frame-Options": "ALLOW-FROM localhost:3000"}}', '--NotebookApp.disable_check_xsrf=True']
