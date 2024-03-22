@@ -75,17 +75,7 @@
 
           parsed_url = urlparse(handler.get_next_url())
           parm_dict = parse_qs(parsed_url.query)
-
-          # New code.  Set the spawner image to the result of _assign_image (should this be moved elsewhere?)
-          # configuration = self._assign_configuration(parm_dict)
-          # c.KubeSpawner.image = configuration["image"]
-          # c.KubeSpawner.default_url = configuration["url"]
-          # if "cmd" in configuration:
-          #   c.KubeSpawner.cmd = configuration["cmd"]
-
-
           
-          print(f'URL is {c.KubeSpawner.default_url}, image is {c.KubeSpawner.image}')
             
           # Check to see if we should allocate a session.  If so, behavior is identical to TmpAuthenticator
 
@@ -101,23 +91,6 @@
           else:
             return None
 
-        # async def pre_spawn_start(self, user, spawner):
-        #   print('In pre_spawn_start')
-        #   auth_state = await user.get_auth_state()
-        #   print(f'auth_state: {json.dumps(auth_state) if auth_state is not None else None}')
-        #   configuration = auth_state["configuration"]
-        #   if configuration:
-        #     spawner.image = configuration["image"]
-        #     if "url" in configuration:
-        #       spawner.url = configuration["url"]
-        
-        #     if "cmd" in configuration:
-        #       spawner.cmd = configuration["cmd"]
-        #     print(f'image: {spawner.image}, cmd: {spawner.cmd}, url: {spawner.url}')
-        #   else:
-        #     print('Configuration is None')
-        #   print(f'spawner: {json.dumps(spawner)}')
-        #   print('End pre_spawn_start')
 
         def get_handlers(self, app):
           """
@@ -136,13 +109,6 @@
       c.JupyterHub.authenticator_class = TmpSecretAuthenticator
 
       # Logging code which should disappear
-
-      def my_hook(authenticator, handler, authentication):
-        str = json.dumps(authentication)
-        print('In my_hook')
-        print(str)
-        return authentication
-      c.Authenticator.post_auth_hook = my_hook
 
       class ProfileAssigner:
         def __init__(self):
@@ -168,7 +134,7 @@
         def choose_profile(self, profile_name):
           return self.profiles[profile_name] if profile_name in self.profiles else self.profiles['default']
           
-      def hook1(spawner):
+      def spawn_get_config_hook(spawner):
         print('In pre-spawn hook')
         profile_chooser = ProfileAssigner()
         profile = profile_chooser.choose_profile('default')
@@ -188,7 +154,7 @@
           spawner.cmd = profile["cmd"]
         print({"image":spawner.image, "url": spawner.default_url, "cmd": spawner.cmd})
           
-      c.Spawner.pre_spawn_hook = hook1
+      c.Spawner.pre_spawn_hook = spawn_get_config_hook
 cull:
   enabled: true
   timeout: 900
@@ -207,5 +173,3 @@ singleuser:
   cpu:
     limit: 0.97
     guarantee: 0.002
-image:
-  pullPolicy: Always
