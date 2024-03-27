@@ -1,0 +1,4 @@
+hub:
+  config:
+    Authenticator: 
+      enable_auth_state: true
