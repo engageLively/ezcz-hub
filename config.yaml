@@ -78,6 +78,8 @@ hub:
           configurations = {
             "lesson3": {"image": "gcr.io/ezczstat/lesson3-python:1.0.1", "url": ""},
             "breezing": {"image": "gcr.io/ezczstat/breezing-jlab:1.0.2", "url": "/rstudio"},
+            "widgetz": {"image": "gcr.io/ezczstat/widgetz:1.0.2", "url": "/rstudio"},
+            "shiny": {"image": "gcr.io/ezczstat/shiny:1.0.2", "url": "/rstudio"},
             "bayesian-2": {"image": "gcr.io/ezczstat/bayesian-jlab:1.0.2", "url": "/rstudio"},
             "rstudio": {"image": "engagelively/el-jupyter:rstudio2.2.2", "url": "/rstudio"},
             "rstudio-test-iframe": {"image": "engagelively/test-rstudio", "url": "/rstudio"},
@@ -163,6 +165,7 @@ hub:
             "lesson3": {"image": "gcr.io/ezczstat/lesson3-python:1.0.1", "url": ""},
             "breezing": {"image": "gcr.io/ezczstat/breezing-jlab:1.0.2", "url": "/rstudio"},
             "widgetz": {"image": "gcr.io/ezczstat/widgetz:1.0.2", "url": "/rstudio"},
+            "shiny": {"image": "gcr.io/ezczstat/shiny:1.0.2", "url": "/rstudio"},
             "bayesian-2": {"image": "gcr.io/ezczstat/bayesian-jlab:1.0.2", "url": "/rstudio"},
             "rstudio": {"image": "engagelively/el-jupyter:rstudio2.2.2", "url": "/rstudio"},
             "rstudio-test-iframe": {"image": "engagelively/test-rstudio", "url": "/rstudio"},
