@@ -1,0 +1,18 @@
+cull:
+  enabled: true
+  timeout: 300
+  every: 300
+  maxAge: 3600
+  users: true
+singleuser:
+  networkPolicy:
+    enabled: true
+  defaultUrl: "/lab"
+  storage:
+    type: none
+  memory:
+    limit: 2G
+    guarantee: 100M
+  cpu:
+    limit: 0.97
+    guarantee: 0.002
