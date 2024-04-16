@@ -110,7 +110,11 @@ hub:
           
           if 'jwt' in parm_dict:
             token = parm_dict['jwt'][0]
-            encoded =  jwt.decode(token, self.token_secret, algorithms=["HS256"])
+            try:
+              encoded =  jwt.decode(token, self.token_secret, algorithms=["HS256"])
+            except jwt.exceptions.InvalidSignatureError:
+              print(f'Decode of {token} failed using secret {self.token_secret}')
+              encoded = 'no jwt'
           else:
             encoded = "no jwt"
           
@@ -183,8 +187,6 @@ hub:
 
         def choose_profile(self, profile_name):
           return self.profiles[profile_name] if profile_name in self.profiles else self.profiles['default']
-
-      
           
       def spawn_get_config_hook(spawner):
         print('In pre-spawn hook')
@@ -211,7 +213,10 @@ hub:
         print({"image":spawner.image, "url": spawner.default_url, "cmd": spawner.cmd})
           
       c.Spawner.pre_spawn_hook = spawn_get_config_hook
-      c.TmpSecretAuthenticator.token_secret = '09f26e402586e2faa8da4c98a35f1b20d6b033c6097befa8be3486a829587fe2f90a832bd3ff9d42710a4da095a2ce285b009f0c3730cd9b8e1af3eb84df6611'
+    00-secret-config: |
+      c.TmpSecretAuthenticator.token_secret = 'JOepKIJ5LZW4tyyrrs6m4w=='
+
+
 cull:
   enabled: true
   timeout: 300
