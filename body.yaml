@@ -102,9 +102,9 @@
               print(data)
               user = data["user"]
               return {
-                "name": user,
+                "name": str(uuid.uuid4()),
                 "auth_state": {
-                  "user": user,
+                  "orig_user": user,
                   "token_data": data
                 }
               }
