@@ -92,33 +92,31 @@
 
           parsed_url = urlparse(handler.get_next_url())
           parm_dict = parse_qs(parsed_url.query)
+          print(parm_dict)
           
           if 'jwt' in parm_dict:
             token = parm_dict['jwt'][0]
             try:
               encoded =  jwt.decode(token, self.token_secret, algorithms=["HS256"])
+              data = encoded['data']
+              print(data)
+              user = data["user"]
+              return {
+                "name": user,
+                "auth_state": {
+                  "user": user,
+                  "token_data": data
+                }
+              }
             except jwt.exceptions.InvalidSignatureError:
               print(f'Decode of {token} failed using secret {self.token_secret}')
               encoded = 'no jwt'
+              return None
           else:
             encoded = "no jwt"
-          
-          print(encoded)
-
-          # Check to see if we should allocate a session.  If so, behavior is identical to TmpAuthenticator
-
-          if 'secret' in parm_dict and parm_dict['secret'][0] == 'my_secret':
-            username = str(uuid.uuid4())
-            return {
-                "name": username,
-                "auth_state": {
-                  "data": parm_dict,
-                  "token_data": encoded
-                  # "configuration": configuration
-                }
-            }
-          else:
             return None
+          
+  
 
         async def refresh_user(self, user, handler):
           # We should always refresh -- no session history for this application
@@ -162,12 +160,12 @@
             "tensor_flow": {"image": "engagelively/el-jupyter:tensorflow2.2.2", "url": ""},
             "spark": {"image": "engagelively/el-jupyter:allspark2.2.2", "url": ""},
             "base": {"image": "engagelively/el-jupyter:base2.2.2", "url": ""},
-            "scipy": {"image": "engagelively/el-jupyter:scipy2.2.2", "url": ""},
+            "fds": {"image": "engagelively/el-jupyter:scipy2.2.2", "url": ""},
             "default": {"image": "quay.io/jupyterhub/singleuser:latest", "url": ""}
           }
 
         def get_profile(self, parm_dict):
-          selected_config_key = parm_dict['config'][0] if 'config' in parm_dict else "default"
+          selected_config_key = parm_dict['config'] if 'config' in parm_dict else "default"
           return self.choose_profile(selected_config_key)
 
         def choose_profile(self, profile_name):
@@ -175,24 +173,18 @@
           
       def spawn_get_config_hook(spawner):
         print('In pre-spawn hook')
-        if hasattr(spawner, 'token_data'):
-          print(f'token data: {spawner.token_data}')
-        else:
-          print('no token data')
         profile_chooser = ProfileAssigner()
         profile = profile_chooser.choose_profile('default')
         if spawner is not None:
-          if hasattr(spawner, 'handler'):
-            print(f'Spawner handler is {type(spawner.handler)}')
-            parsed_url = urlparse(spawner.handler.get_next_url())
-            parm_dict = parse_qs(parsed_url.query)
-            print(json.dumps(parm_dict))
-            profile = profile_chooser.get_profile(parm_dict)
+          if hasattr(spawner, 'token_data'):
+            print(f'token data: {spawner.token_data}')
+            profile = profile_chooser.get_profile(spawner.token_data)
+            spawner.image = profile["image"]
+            spawner.default_url = profile["url"]
           else:
-            print('Spawner has no handler')
+            print('no token data')
         print(json.dumps(profile))
-        spawner.image = profile["image"]
-        spawner.default_url = profile["url"]
+       
         if "cmd" in profile:
           spawner.cmd = profile["cmd"]
         print({"image":spawner.image, "url": spawner.default_url, "cmd": spawner.cmd})
