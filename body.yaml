@@ -61,11 +61,12 @@
           # parse_qs(urlparse.query) where parse_qs and urlparse are both in the standard library urllib.parse
           # the image dictionary and default_image should be in an offboard file.
           configurations = {
-            "lesson3": {"image": "gcr.io/ezczstat/lesson3-python:1.0.1", "url": ""},
-            "breezing": {"image": "gcr.io/ezczstat/breezing-jlab:1.0.2", "url": "/rstudio"},
-            "widgetz": {"image": "gcr.io/ezczstat/widgetz:1.0.2", "url": "/rstudio"},
-            "shiny": {"image": "gcr.io/ezczstat/shiny:1.0.2", "url": "/rstudio"},
-            "bayesian-2": {"image": "gcr.io/ezczstat/bayesian-jlab:1.0.2", "url": "/rstudio"},
+            "fds": {"image": "gcr.io/ezczstat/foundationz:1.0.0", "url": ""},
+            "tidy-i": {"image": "gcr.io/ezczstat/breezing-jlab:1.0.2", "url": "/rstudio"},
+            "shiny-iii": {"image": "gcr.io/ezczstat/widgetz:1.0.2", "url": "/rstudio"},
+            "shiny-ii": {"image": "gcr.io/ezczstat/shiny:1.0.2", "url": "/rstudio"},
+            "stan-i": {"image": "gcr.io/ezczstat/bayesian-jlab:1.0.2", "url": "/rstudio"},
+            "tools-and-tech": {"image": "gcr.io/ezczstat/tools-python:1.0.1", "url": ""},
             "rstudio": {"image": "engagelively/el-jupyter:rstudio2.2.2", "url": "/rstudio"},
             "rstudio-test-iframe": {"image": "engagelively/test-rstudio", "url": "/rstudio"},
             "data_science": {"image": "engagelively/el-jupyter:datascience2.2.2", "url": ""},
@@ -98,7 +99,7 @@
             token = parm_dict['jwt'][0]
             try:
               encoded =  jwt.decode(token, self.token_secret, algorithms=["HS256"])
-              data = encoded['data']
+              data = encoded['data'] # check for KeyError
               print(data)
               user = data["user"]
               return {
@@ -149,18 +150,19 @@
       class ProfileAssigner:
         def __init__(self):
           self.profiles = {
-            "lesson3": {"image": "gcr.io/ezczstat/lesson3-python:1.0.1", "url": ""},
-            "breezing": {"image": "gcr.io/ezczstat/breezing-jlab:1.0.2", "url": "/rstudio"},
-            "widgetz": {"image": "gcr.io/ezczstat/widgetz:1.0.2", "url": "/rstudio"},
-            "shiny": {"image": "gcr.io/ezczstat/shiny:1.0.2", "url": "/rstudio"},
-            "bayesian-2": {"image": "gcr.io/ezczstat/bayesian-jlab:1.0.2", "url": "/rstudio"},
+            "fds": {"image": "gcr.io/ezczstat/foundationz:1.0.0", "url": ""},
+            "tidy-i": {"image": "gcr.io/ezczstat/breezing-jlab:1.0.2", "url": "/rstudio"},
+            "shiny-iii": {"image": "gcr.io/ezczstat/widgetz:1.0.2", "url": "/rstudio"},
+            "shiny-ii": {"image": "gcr.io/ezczstat/shiny:1.0.2", "url": "/rstudio"},
+            "stan-i": {"image": "gcr.io/ezczstat/bayesian-jlab:1.0.2", "url": "/rstudio"},
+            "tools-and-tech": {"image": "gcr.io/ezczstat/tools-python:1.0.1", "url": ""},
             "rstudio": {"image": "engagelively/el-jupyter:rstudio2.2.2", "url": "/rstudio"},
             "rstudio-test-iframe": {"image": "engagelively/test-rstudio", "url": "/rstudio"},
             "data_science": {"image": "engagelively/el-jupyter:datascience2.2.2", "url": ""},
             "tensor_flow": {"image": "engagelively/el-jupyter:tensorflow2.2.2", "url": ""},
             "spark": {"image": "engagelively/el-jupyter:allspark2.2.2", "url": ""},
             "base": {"image": "engagelively/el-jupyter:base2.2.2", "url": ""},
-            "fds": {"image": "engagelively/el-jupyter:scipy2.2.2", "url": ""},
+            "scipy": {"image": "engagelively/el-jupyter:scipy2.2.2", "url": ""},
             "default": {"image": "quay.io/jupyterhub/singleuser:latest", "url": ""}
           }
 
