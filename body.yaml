@@ -148,7 +148,17 @@
       c.Spawner.auth_state_hook = token_data_hook
 
       class ProfileAssigner:
+        '''
+        Choose an profile based on the 'config' parameter passed encoded in the JWT in the URL.  token_data is what was passed in 
+        encoded in the jwt and has a field 'config' which is the key for the profile. This just returns the selected profile
+        from the passed config_key
+        '''
+        
         def __init__(self):
+          '''
+          profiles is the dictionary of profiles we maintain.  Each profile has an image (mandatory, no default) which is a 
+          Docker container image, andan optional url parameter (default "")
+          '''
           self.profiles = {
             "fds": {"image": "gcr.io/ezczstat/foundationz:1.0.0", "url": ""},
             "tidy-i": {"image": "gcr.io/ezczstat/breezing-jlab:1.0.2", "url": "/rstudio"},
@@ -166,29 +176,41 @@
             "default": {"image": "quay.io/jupyterhub/singleuser:latest", "url": ""}
           }
 
-        def get_profile(self, parm_dict):
-          selected_config_key = parm_dict['config'] if 'config' in parm_dict else "default"
+        def get_profile(self, token_data):
+          '''
+          Find the key from token_data (in field 'config') and return the selected profile.  Return the default profile if there is no key
+          '''
+          selected_config_key = token_data['config'] if 'config' in token_data else "default"
           return self.choose_profile(selected_config_key)
 
         def choose_profile(self, profile_name):
+          '''
+          Return the profile from profile_name if it exists, the default profile if it doesn't
+          '''
           return self.profiles[profile_name] if profile_name in self.profiles else self.profiles['default']
           
       def spawn_get_config_hook(spawner):
-        print('In pre-spawn hook')
+        # print('In pre-spawn hook')
+        '''
+        The pre-spawn hook.  If there is a spawner, and it has a token_data attribute (the authenticator should have created it
+        and passed it to the spawner), get the profile from token_data; if not the default is used.  Then set  the spawner's image and url
+        to the profile image and URL in the profile.  If the profile has a cmd, set the spawner's cmd to that
+        '''
         profile_chooser = ProfileAssigner()
         profile = profile_chooser.choose_profile('default')
         if spawner is not None:
           if hasattr(spawner, 'token_data'):
-            print(f'token data: {spawner.token_data}')
+            # print(f'token data: {spawner.token_data}')
             profile = profile_chooser.get_profile(spawner.token_data)
-            spawner.image = profile["image"]
-            spawner.default_url = profile["url"]
-          else:
-            print('no token data')
-        print(json.dumps(profile))
+            
+          # else:
+            # print('no token data')
+        # print(json.dumps(profile))
        
+        spawner.image = profile["image"]
+        spawner.default_url = profile["url"]
         if "cmd" in profile:
           spawner.cmd = profile["cmd"]
-        print({"image":spawner.image, "url": spawner.default_url, "cmd": spawner.cmd})
+        # print({"image":spawner.image, "url": spawner.default_url, "cmd": spawner.cmd})
           
       c.Spawner.pre_spawn_hook = spawn_get_config_hook
