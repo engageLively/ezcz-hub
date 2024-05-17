@@ -1,9 +1,8 @@
 cull:
   enabled: true
-  timeout: 300
-  every: 300
+  timeout: 3600
+  every: 3600
   maxAge: 3600
-  users: true
 singleuser:
   networkPolicy:
     enabled: true
@@ -14,5 +13,12 @@ singleuser:
     limit: 2G
     guarantee: 100M
   cpu:
-    limit: 0.97
-    guarantee: 0.002
+    limit: 1.5
+    guarantee: 0.5
+  imagePullSecrets:
+    enabled: true
+    registry: 'gcr.io'
+    password:
+      type: "service account"
+      project_id: "ezczstat"
+      password: "MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDQ/jMWcDNzGGql\nDFkSX0uuKmQDksztLyiOnulvJJiXXUNi4hlz/EPgQHL+uYOUFAjKaJFw9lEDes4R\nv8njRDz4IP3aM1fTKLKto2ciDzjOfP7cUTrb2W+guMoIK5w7aThexOPRPSeZ0Eq4\nV/9NGA3X7Evf30SmjzONjre42uio/FjkSnuezUAhnAgZtcVfcStgOMlQTqpn2mEW\npjd1qrM93GlsEjWj9fzSmZV+9ECcMunAnt413Gaco/8hydClMaQ+w0F0M/T7HxFb\ngkfsv2ZoupeSTFykOmQ2H53ch2WVoZ+Za2j8wjLEgprBo0yy/6gQ5TXdgRaVD7eb\nrvhZrjWFAgMBAAECggEAEKxweHuP9esuhPJI1UOnkXgIfdV+MR/C9qqceUAcRsU2\nIq3jCyMcP4hSHwWUxwwDIzI3r6FjLL8lMNAnjqYWJCiuVV8lGa+586BL/TEQM+nP\n2SrHjUcva01Fhw8tpNAb+HRGWwjr6iRZSxRFhh8jaZo3TR+DsLMk5ogKmyj8iLtg\n/jfBuopSXGkxOUpwuTqflbW1JvSFfJih4YtJfwl4kRYp1Gk4ILtXRf55tZnr+LPG\n9dl0ClBsWFPsv66akLcJfgH/s4bs2UY1c3j1cByQKXPOghdTvoDA5o4PPCIyKelI\nOltYpS3Se60Qt4ddjrGDsCv0abGXljlENoAESkbmCQKBgQDtYQgODzwGsJwOt8PM\nWkFqJ8X+8xtFJe73192l/+QIUNDXrLTPlVeLXusc8TZFxXU/YcOmf6t2GmrrYYjB\nKtS8pngITCNY6GcSxk0h15mQvkaGZ69+NV+FOrEJpwwi/QazOouL4Q6i842upn0O\n2cKXeiNHBm50mxyGEbLYLD8tbQKBgQDhYyDgJBcGaXgtMWh0gnEl5/H6q0L32ukj\nvE4B0LMMpHTaakmaoMNFLaE1a2B50qtBkfKr69jEoopuayuM1CIVXA4d+CMyWeGz\n7H1/f9sFJUd+VeQDnY92a/XBiKqnFrVhWXbzeF7+NmtQDGhr2FyjfC9OF4CBVgzH\ncUGTaBOReQKBgQCY2dot83FbfW1/rKTPeW6VxHah7DirFfoCbWWz9koHcMKJnhPv\nduKgQ8ZxJIEl/De7UGCDXcIykmA2oN9GQyYpM6gm75/zJ/L3C+mu2P1xTpRrB2jh\ng8y2JUzKQl52SSd/UTt6HrkmBF4/D8WHQoEiuOruWR3Wx+peChd3S0aDIQKBgBho\nPLIpFlk6aKo0NISRb6FUOc8UZr8idKbLCIOHzyvqT0Ery2a0TBEcvN1lEGCA4MzL\n+kSF2MaKd4U3k9K/UiWP/3NdYKpeM2Phk0GQXe5zuAdFU9jUYinHzSg1HY3UlrXB\nE3GQMnFDAWH8xf4PwxBtLU4+m0rmP6IFcL1+wse5AoGBALxaxeRi6KF/iWr6Y3T3\naxoUoH+Ov5iD1Ih3GKc7sX9RzTj31B3Sbf8ZIa9AJdjEFg3kVTNPDMkpzmHhhX3B\n1612qvxSs1MHrsSoTxHslcTh2Zi2RlgsbhNtjobIJhjNy00Y6cdXh27BwcfGRn63\ncMDY82EpDVEOA1IdRb2C70Mn"
