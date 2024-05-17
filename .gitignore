@@ -20,3 +20,4 @@ suffix-local.yaml
 secret-hub.yaml
 secret-local.yaml
 config.yaml
+start-proxy.bat

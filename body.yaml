@@ -88,7 +88,7 @@
           When secret is present and correct, slways authenticate a new user by generating a universally unique
           identifier (uuid). (Identical to tmp_authenticator)
           """
-          
+          self.auth_refresh_age = 3600
           # New code.  parse the URL and get the query dictionary.
 
           parsed_url = urlparse(handler.get_next_url())
