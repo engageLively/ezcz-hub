@@ -16,3 +16,29 @@ singleuser:
   cpu:
     limit: 0.97
     guarantee: 0.002
+
+scheduling:
+  corePods:
+    tolerations:
+      - key: hub.jupyter.org/dedicated
+        operator: Equal
+        value: core
+        effect: NoSchedule
+      - key: hub.jupyter.org_dedicated
+        operator: Equal
+        value: core
+        effect: NoSchedule
+    nodeAffinity:
+      matchNodePurpose: require
+  userPods:
+    tolerations:
+      - key: hub.jupyter.org/dedicated
+        operator: Equal
+        value: user
+        effect: NoSchedule
+      - key: hub.jupyter.org_dedicated
+        operator: Equal
+        value: user
+        effect: NoSchedule
+    nodeAffinity:
+      matchNodePurpose: require
